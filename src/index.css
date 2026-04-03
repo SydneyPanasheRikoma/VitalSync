@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 215 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    --primary: 172 85% 32%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 210 20% 95%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 172 55% 94%;
+    --accent-foreground: 172 85% 25%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 20% 91%;
+    --input: 214 20% 91%;
+    --ring: 172 85% 32%;
+
+    --radius: 0.75rem;
+
+    /* Vital sign colors */
+    --vital-heart: 0 84% 60%;
+    --vital-bp: 258 90% 66%;
+    --vital-glucose: 25 95% 53%;
+    --vital-spo2: 217 91% 60%;
+
+    /* Alert levels */
+    --alert-low: 38 92% 50%;
+    --alert-medium: 21 90% 48%;
+    --alert-critical: 0 79% 51%;
+
+    /* Glassmorphism */
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 0 0% 100% / 0.2;
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+
+    --sidebar-background: 215 28% 17%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 172 85% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 28% 22%;
+    --sidebar-accent-foreground: 210 20% 90%;
+    --sidebar-border: 215 28% 25%;
+    --sidebar-ring: 172 85% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-lg;
+  }
+
+  .glass-card-hover {
+    @apply glass-card hover:shadow-xl hover:border-primary/20 transition-all duration-300;
+  }
+
+  .vital-pulse {
+    animation: vital-pulse 2s ease-in-out infinite;
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(172 85% 32%), hsl(172 85% 45%));
+  }
+
+  .gradient-critical {
+    background: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 79% 51%));
+  }
+}
+
+@keyframes vital-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.4s ease-out;
+}
