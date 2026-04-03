@@ -38,7 +38,7 @@ const DoctorDashboard = () => {
   return (
     <AppLayout role="doctor">
       <div className="max-w-7xl mx-auto space-y-6 animate-slide-in">
-        <h1 className="text-2xl font-bold">Doctor Dashboard</h1>
+        <h1 className="text-2xl font-semibold">Doctor Dashboard</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Patient list */}
@@ -53,7 +53,7 @@ const DoctorDashboard = () => {
               />
             </div>
 
-            <div className="glass-card rounded-xl overflow-hidden">
+            <div className="rounded-xl overflow-hidden border border-border bg-card shadow-sm">
               <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 px-5 py-3 border-b text-xs font-medium text-muted-foreground">
                 <span>Patient</span>
                 <span>Condition</span>
@@ -88,7 +88,7 @@ const DoctorDashboard = () => {
             </div>
 
             {/* Population chart */}
-            <div className="glass-card rounded-xl p-5 space-y-3">
+            <div className="rounded-xl border border-border bg-card p-5 space-y-3 shadow-sm">
               <h3 className="text-sm font-semibold">Patient Risk Distribution</h3>
               <div className="h-48">
                 <ResponsiveContainer width="100%" height="100%">
@@ -113,7 +113,7 @@ const DoctorDashboard = () => {
 
           {/* Priority Alerts */}
           <div className="space-y-4">
-            <div className="glass-card rounded-xl p-5 space-y-4">
+            <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-sm">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-alert-critical" />
                 <h3 className="text-sm font-semibold">Priority Alerts</h3>

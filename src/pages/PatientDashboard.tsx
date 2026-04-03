@@ -8,11 +8,13 @@ import { FamilyConnect } from "@/components/FamilyConnect";
 import { EmergencyModal } from "@/components/EmergencyModal";
 import { useVitals } from "@/hooks/useVitals";
 import { Button } from "@/components/ui/button";
-import { Phone, Activity } from "lucide-react";
+import { Phone } from "lucide-react";
+import { getCurrentUser } from "@/lib/auth";
 
 const PatientDashboard = () => {
   const { vitals, syncAgo, isRecent } = useVitals();
   const [emergencyOpen, setEmergencyOpen] = useState(false);
+  const user = getCurrentUser();
 
   return (
     <AppLayout role="patient">
@@ -20,9 +22,9 @@ const PatientDashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold">Welcome back, Amara</h1>
+            <h1 className="text-2xl font-semibold">Patient Monitoring Dashboard</h1>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
-              Your AI Health Guardian
+              {user?.name ? `${user.name} • ` : ""}Baseline analysis and 48-hour risk monitoring
               <span className="flex items-center gap-1.5 text-xs">
                 <span className={`h-2 w-2 rounded-full ${isRecent ? "bg-primary vital-pulse" : "bg-alert-low"}`} />
                 Synced {syncAgo < 60 ? `${syncAgo}s ago` : `${Math.floor(syncAgo / 60)}m ago`}

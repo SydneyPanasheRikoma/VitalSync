@@ -14,7 +14,7 @@ export function AlertTimeline() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <div className="glass-card rounded-xl p-5 space-y-4">
+    <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold">Alert History</h3>
         <span className="text-xs text-muted-foreground">Last 7 days</span>

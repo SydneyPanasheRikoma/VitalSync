@@ -18,7 +18,7 @@ export function VitalCard({ label, value, unit, icon, colorClass, bgClass, trend
   const TrendIcon = trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : Minus;
 
   return (
-    <div className={`glass-card-hover rounded-xl p-5 relative overflow-hidden ${warning ? "ring-2 ring-alert-critical/40" : ""}`}>
+    <div className={`rounded-xl border border-border bg-card p-5 relative overflow-hidden shadow-sm ${warning ? "ring-2 ring-alert-critical/40" : ""}`}>
       {warning && (
         <div className="absolute top-0 right-0 px-2 py-0.5 bg-alert-critical text-destructive-foreground text-[10px] font-bold rounded-bl-lg">
           WARNING
@@ -95,7 +95,7 @@ export function VitalSignsGrid({ vitals }: { vitals: VitalSigns }) {
         colorClass="text-vital-spo2"
         bgClass="bg-vital-spo2/10"
         trend="stable"
-        subtitle={vitals.spo2 < 95 ? "⚠️ Below safe threshold" : "Normal oxygen levels"}
+        subtitle={vitals.spo2 < 95 ? "Below safe threshold" : "Normal oxygen levels"}
         warning={vitals.spo2 < 95}
       />
     </div>

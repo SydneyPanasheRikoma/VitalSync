@@ -1,45 +1,79 @@
 import { AppLayout } from "@/components/AppLayout";
-import { useVitals } from "@/hooks/useVitals";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Phone, Heart, ShieldCheck, AlertTriangle, BookOpen, Clock } from "lucide-react";
-import { mockAlerts, mockEducationArticles } from "@/lib/mockData";
+import { Phone, ShieldCheck, AlertTriangle, BookOpen, Clock } from "lucide-react";
+import { mockAlerts, mockEducationArticles, mockPatients } from "@/lib/mockData";
+import { getCurrentUser } from "@/lib/auth";
 
 const FamilyDashboard = () => {
-  const { vitals, isRecent } = useVitals();
+  const user = getCurrentUser();
+  const linked = useMemo(() => {
+    if (user?.linkedPatients?.length) {
+      return mockPatients.filter((patient) => user.linkedPatients.includes(patient.id));
+    }
+
+    return mockPatients.slice(0, 2);
+  }, [user]);
+
+  const [selectedPatientId, setSelectedPatientId] = useState(linked[0]?.id ?? "1");
+  const selectedPatient = linked.find((patient) => patient.id === selectedPatientId) ?? linked[0];
+
   const criticalAlerts = mockAlerts.filter((a) => a.type !== "low");
-  const isStable = vitals.glucose <= 140 && vitals.heartRate <= 90 && vitals.spo2 >= 95;
+  const selectedVitals = selectedPatient?.lastVitals;
+  const isStable = selectedVitals
+    ? selectedVitals.glucose <= 140 && selectedVitals.heartRate <= 90 && selectedVitals.spo2 >= 95
+    : true;
 
   return (
     <AppLayout role="family">
       <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
-        <h1 className="text-2xl font-bold">Family Caregiver View</h1>
+        <h1 className="text-2xl font-semibold">Family Monitoring Dashboard</h1>
+
+        <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+          <p className="mb-3 text-sm font-medium">Linked Patients</p>
+          <div className="flex flex-wrap gap-2">
+            {linked.map((patient) => (
+              <Button
+                key={patient.id}
+                type="button"
+                variant={selectedPatientId === patient.id ? "default" : "outline"}
+                onClick={() => setSelectedPatientId(patient.id)}
+                className="h-8"
+              >
+                {patient.name}
+              </Button>
+            ))}
+          </div>
+        </div>
 
         {/* Patient card */}
-        <div className={`glass-card rounded-xl p-6 space-y-4 ${!isStable ? "ring-2 ring-alert-medium/40" : ""}`}>
+        <div className={`rounded-xl border border-border bg-card p-6 shadow-sm space-y-4 ${!isStable ? "ring-2 ring-alert-medium/40" : ""}`}>
           {isStable ? (
             <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
               <ShieldCheck className="h-5 w-5 text-primary" />
-              <span className="text-sm font-medium text-primary">Patient is stable — no active alerts</span>
+              <span className="text-sm font-medium text-primary">Patient is stable with no active alerts</span>
             </div>
           ) : (
             <div className="flex items-center gap-3 p-3 rounded-lg bg-alert-medium/5 border border-alert-medium/20">
               <AlertTriangle className="h-5 w-5 text-alert-medium" />
-              <span className="text-sm font-medium text-alert-medium">⚠️ Alert active — vitals require attention</span>
+              <span className="text-sm font-medium text-alert-medium">Alert active: vitals require attention</span>
             </div>
           )}
 
           <div className="flex items-center gap-4">
             <Avatar className="h-14 w-14">
-              <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">AK</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">{selectedPatient?.avatar || "PT"}</AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-lg font-bold">Amara Khalil</h2>
-              <p className="text-sm text-muted-foreground">Type 2 Diabetes • Age 67</p>
+              <h2 className="text-lg font-semibold">{selectedPatient?.name || "Patient"}</h2>
+              <p className="text-sm text-muted-foreground">
+                {selectedPatient?.condition || "Chronic monitoring"} • Age {selectedPatient?.age || "--"}
+              </p>
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
-                <span className={`h-2 w-2 rounded-full ${isRecent ? "bg-primary" : "bg-alert-low"}`} />
-                Last active: {isRecent ? "Just now" : "5 min ago"}
+                <span className="h-2 w-2 rounded-full bg-primary" />
+                Last active: within 5 minutes
               </div>
             </div>
           </div>
@@ -48,29 +82,29 @@ const FamilyDashboard = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="text-center p-3 rounded-lg bg-vital-heart/5">
               <p className="text-xs text-muted-foreground">Heart Rate</p>
-              <p className="text-xl font-bold text-vital-heart">{vitals.heartRate}</p>
+              <p className="text-xl font-bold text-vital-heart">{selectedVitals?.heartRate}</p>
               <p className="text-[10px] text-muted-foreground">bpm</p>
             </div>
             <div className="text-center p-3 rounded-lg bg-vital-bp/5">
               <p className="text-xs text-muted-foreground">BP</p>
-              <p className="text-xl font-bold text-vital-bp">{vitals.bpSystolic}/{vitals.bpDiastolic}</p>
+              <p className="text-xl font-bold text-vital-bp">{selectedVitals?.bpSystolic}/{selectedVitals?.bpDiastolic}</p>
               <p className="text-[10px] text-muted-foreground">mmHg</p>
             </div>
             <div className="text-center p-3 rounded-lg bg-vital-glucose/5">
               <p className="text-xs text-muted-foreground">Glucose</p>
-              <p className="text-xl font-bold text-vital-glucose">{vitals.glucose}</p>
+              <p className="text-xl font-bold text-vital-glucose">{selectedVitals?.glucose}</p>
               <p className="text-[10px] text-muted-foreground">mg/dL</p>
             </div>
             <div className="text-center p-3 rounded-lg bg-vital-spo2/5">
               <p className="text-xs text-muted-foreground">SpO2</p>
-              <p className="text-xl font-bold text-vital-spo2">{vitals.spo2}%</p>
+              <p className="text-xl font-bold text-vital-spo2">{selectedVitals?.spo2}%</p>
               <p className="text-[10px] text-muted-foreground">oxygen</p>
             </div>
           </div>
         </div>
 
         {/* Alert Timeline */}
-        <div className="glass-card rounded-xl p-5 space-y-3">
+        <div className="rounded-xl border border-border bg-card p-5 space-y-3 shadow-sm">
           <h3 className="text-sm font-semibold">Recent Alerts</h3>
           <div className="space-y-2">
             {criticalAlerts.map((alert) => (
@@ -90,7 +124,7 @@ const FamilyDashboard = () => {
         </div>
 
         {/* Emergency Contacts */}
-        <div className="glass-card rounded-xl p-5 space-y-3">
+        <div className="rounded-xl border border-border bg-card p-5 space-y-3 shadow-sm">
           <h3 className="text-sm font-semibold">Emergency Contacts</h3>
           <div className="space-y-2">
             {[
@@ -114,7 +148,7 @@ const FamilyDashboard = () => {
         </div>
 
         {/* Health Education */}
-        <div className="glass-card rounded-xl p-5 space-y-3">
+        <div className="rounded-xl border border-border bg-card p-5 space-y-3 shadow-sm">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-primary" />
             <h3 className="text-sm font-semibold">Recommended Reading</h3>

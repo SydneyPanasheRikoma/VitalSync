@@ -11,7 +11,7 @@ export function MedicationTracker() {
   };
 
   return (
-    <div className="glass-card rounded-xl p-5 space-y-4">
+    <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-sm">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-vital-bp/10">
           <Pill className="h-5 w-5 text-vital-bp" />
